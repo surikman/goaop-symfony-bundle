@@ -15,9 +15,9 @@ use Symfony\Component\Process\Process;
 
 class DebugAdvisorCommandTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
-        $process = new Process(sprintf('php %s cache:warmup:aop', realpath(__DIR__.'/../Fixtures/project/bin/console')));
+        $process = Process::fromShellCommandline(sprintf('php %s cache:warmup:aop', realpath(__DIR__.'/../Fixtures/project/bin/console')));
         $process->run();
 
         $this->assertTrue($process->isSuccessful(), 'Unable to execute "cache:warmup:aop" command.');
@@ -29,7 +29,7 @@ class DebugAdvisorCommandTest extends TestCase
      */
     public function itDisplaysAdvisorsDebugInfo()
     {
-        $process = new Process(sprintf('php %s debug:advisor', realpath(__DIR__.'/../Fixtures/project/bin/console')));
+        $process = Process::fromShellCommandline(sprintf('php %s debug:advisor', realpath(__DIR__.'/../Fixtures/project/bin/console')));
         $process->run();
 
         $this->assertTrue($process->isSuccessful(), 'Unable to execute "debug:advisor" command.');
@@ -43,7 +43,7 @@ class DebugAdvisorCommandTest extends TestCase
         ];
 
         foreach ($expected as $string) {
-            $this->assertContains($string, $output);
+            $this->assertStringContainsString($string, $output);
         }
     }
 
@@ -53,7 +53,7 @@ class DebugAdvisorCommandTest extends TestCase
      */
     public function itDisplaysStatedAdvisorDebugInfo()
     {
-        $process = new Process(sprintf('php %s debug:advisor --advisor="Go\Symfony\GoAopBundle\Tests\TestProject\Aspect\LoggingAspect->beforeMethod"', realpath(__DIR__.'/../Fixtures/project/bin/console')));
+        $process = Process::fromShellCommandline(sprintf('php %s debug:advisor --advisor="Go\Symfony\GoAopBundle\Tests\TestProject\Aspect\LoggingAspect->beforeMethod"', realpath(__DIR__.'/../Fixtures/project/bin/console')));
         $process->run();
 
         $this->assertTrue($process->isSuccessful(), 'Unable to execute "debug:advisor" command.');
@@ -66,7 +66,7 @@ class DebugAdvisorCommandTest extends TestCase
         ];
 
         foreach ($expected as $string) {
-            $this->assertContains($string, $output);
+            $this->assertStringContainsString($string, $output);
         }
     }
 }

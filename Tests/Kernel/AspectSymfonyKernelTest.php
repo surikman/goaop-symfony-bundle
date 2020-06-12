@@ -44,8 +44,6 @@ class AspectSymfonyKernelTest extends TestCase
     /**
      * @test
      * @runInSeparateProcess
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Initialization of AOP loader was failed, probably due to Debug::enable()
      */
     public function itThrowsExceptionWhenIntializationIsImpossible()
     {
@@ -54,6 +52,8 @@ class AspectSymfonyKernelTest extends TestCase
 
         AopComposerLoader::$initialized = false;
 
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Initialization of AOP loader was failed, probably due to Debug::enable()');
         AspectSymfonyKernel::getInstance()->init([
             'appDir'   => __DIR__,
             'cacheDir' => sys_get_temp_dir(),

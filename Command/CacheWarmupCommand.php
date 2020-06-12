@@ -46,4 +46,14 @@ class CacheWarmupCommand extends BaseCommand
     {
         /* noop */
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        parent::execute($input, $output);
+
+        return 0;
+    }
 }

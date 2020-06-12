@@ -13,7 +13,10 @@ namespace Go\Symfony\GoAopBundle\Tests;
 use Go\Instrument\ClassLoading\AopComposerLoader;
 use Go\Symfony\GoAopBundle\DependencyInjection\Compiler\AspectCollectorPass;
 use Go\Symfony\GoAopBundle\GoAopBundle;
+use PHPUnit\Framework\MockObject\Invocation;
+use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use Symfony\Component\Debug\DebugClassLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -25,11 +28,10 @@ class GoAopBundleTest extends TestCase
 {
     /**
      * @test
-     * @expectedException \InvalidArgumentException
      */
     public function itThrowsExceptionWhenBundleIsNotRegisteredAsFirstBundle()
     {
-        $container = $this->getMockBuilder(ContainerBuilder::class)->getMock();
+        $container = $this->getMockBuilder(ContainerBuilder::class)->disableOriginalConstructor()->getMock();
 
         $container
             ->method('getParameter')
@@ -37,9 +39,10 @@ class GoAopBundleTest extends TestCase
             ->willReturn(['ArbitraryBundleName' => 'A bundle']);
 
         $bundle = new GoAopBundle();
-        
+
         $bundle->getName(); // invoke resolution of bundle name
 
+        $this->expectException(\InvalidArgumentException::class);
         $bundle->build($container);
     }
 
@@ -48,7 +51,7 @@ class GoAopBundleTest extends TestCase
      */
     public function itRegistersAspectCollectorPassPass()
     {
-        $container = $this->getMockBuilder(ContainerBuilder::class)->getMock();
+        $container = $this->getMockBuilder(ContainerBuilder::class)->disableOriginalConstructor()->getMock();
 
         $container
             ->method('getParameter')
@@ -65,8 +68,13 @@ class GoAopBundleTest extends TestCase
 
         $bundle->build($container);
 
-        $invocation = $spy->getInvocations()[0];
-        $this->assertInstanceOf(AspectCollectorPass::class, $invocation->parameters[0]);
+        $invocationReflection = new ReflectionClass(InvocationOrder::class);
+        $invocationPropertyReflection = $invocationReflection->getProperty('invocations');
+        $invocationPropertyReflection->setAccessible(true);
+
+        /** @var Invocation $invocation */
+        $invocation = $invocationPropertyReflection->getValue($spy)[0];
+        $this->assertInstanceOf(AspectCollectorPass::class, $invocation->getParameters()[0]);
     }
 
     /**
@@ -78,7 +86,7 @@ class GoAopBundleTest extends TestCase
         require_once __DIR__.'/Fixtures/mock/DebugClassLoader.php';
         require_once __DIR__.'/Fixtures/mock/AopComposerLoader.php';
 
-        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
+        $container = $this->getMockBuilder(ContainerInterface::class)->disableOriginalConstructor()->getMock();
 
         $container
             ->expects($this->once())
@@ -101,15 +109,13 @@ class GoAopBundleTest extends TestCase
     /**
      * @test
      * @runInSeparateProcess
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Initialization of AOP loader was failed, probably due to Debug::enable()
      */
     public function itThrowsExceptionOnBootWithoutAopComposerLoader()
     {
         require_once __DIR__.'/Fixtures/mock/DebugClassLoader.php';
         require_once __DIR__.'/Fixtures/mock/AopComposerLoader.php';
 
-        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
+        $container = $this->getMockBuilder(ContainerInterface::class)->disableOriginalConstructor()->getMock();
 
         $container
             ->expects($this->once())
@@ -121,6 +127,8 @@ class GoAopBundleTest extends TestCase
 
         AopComposerLoader::$initialized = false;
 
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Initialization of AOP loader was failed, probably due to Debug::enable()');
         $bundle->boot();
     }
 }

@@ -22,7 +22,7 @@ class AspectCacheWarmerTest extends WebTestCase
 {
     protected $cacheDir = __DIR__.'/../Fixtures/project/var/cache/test';
 
-    public function setUp()
+    protected function setUp(): void
     {
         $filesystem = new Filesystem();
 

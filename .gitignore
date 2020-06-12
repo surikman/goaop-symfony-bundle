@@ -2,3 +2,4 @@
 /build/
 /Tests/Fixtures/project/var/cache/*
 /Tests/Fixtures/project/var/logs/*
+.phpunit.result.cache

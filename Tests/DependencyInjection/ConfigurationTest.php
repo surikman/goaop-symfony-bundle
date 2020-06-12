@@ -13,6 +13,8 @@ namespace Go\Symfony\GoAopBundle\Tests\DependencyInjection;
 use Go\Symfony\GoAopBundle\DependencyInjection\Configuration;
 use Go\Symfony\GoAopBundle\DependencyInjection\GoAopExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionConfigurationTestCase;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 /**
  * Class ConfigurationTest
@@ -29,7 +31,7 @@ class ConfigurationTest extends AbstractExtensionConfigurationTestCase
             'doctrine_support' => false,
             'options'          => [
                 'features'      => 0,
-                'app_dir'       => '%kernel.root_dir%/../src',
+                'app_dir'       => '%kernel.project_dir%/src',
                 'cache_dir'     => '%kernel.cache_dir%/aspect',
                 'debug'         => '%kernel.debug%',
                 'include_paths' => [],
@@ -111,7 +113,7 @@ class ConfigurationTest extends AbstractExtensionConfigurationTestCase
     /**
      * {@inheritdoc}
      */
-    protected function getContainerExtension()
+    protected function getContainerExtension(): ExtensionInterface
     {
         return new GoAopExtension();
     }
@@ -119,7 +121,7 @@ class ConfigurationTest extends AbstractExtensionConfigurationTestCase
     /**
      * {@inheritdoc}
      */
-    protected function getConfiguration()
+    protected function getConfiguration(): ConfigurationInterface
     {
         return new Configuration();
     }
