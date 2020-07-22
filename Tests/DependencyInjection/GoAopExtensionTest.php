@@ -55,7 +55,7 @@ class GoAopExtensionTest extends AbstractExtensionTestCase
 
         $this->assertEquals([
             'features'     => 0,
-            'appDir'       => '%kernel.root_dir%/../src',
+            'appDir'       => '%kernel.project_dir%/src',
             'cacheDir'     => '%kernel.cache_dir%/aspect',
             'debug'        => '%kernel.debug%',
             'includePaths' => [],
@@ -108,7 +108,7 @@ class GoAopExtensionTest extends AbstractExtensionTestCase
     /**
      * {@inheritdoc}
      */
-    protected function getContainerExtensions()
+    protected function getContainerExtensions(): array
     {
         return [
             new GoAopExtension(),

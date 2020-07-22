@@ -18,9 +18,9 @@ use Symfony\Component\Process\Process;
  */
 class DebugAspectCommandTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
-        $process = new Process(sprintf('php %s cache:warmup:aop', realpath(__DIR__.'/../Fixtures/project/bin/console')));
+        $process = Process::fromShellCommandline(sprintf('php %s cache:warmup:aop', realpath(__DIR__.'/../Fixtures/project/bin/console')));
         $process->run();
 
         $this->assertTrue($process->isSuccessful(), 'Unable to execute "cache:warmup:aop" command.');
@@ -32,7 +32,7 @@ class DebugAspectCommandTest extends TestCase
      */
     public function itDisplaysAspectsDebugInfo()
     {
-        $process = new Process(sprintf('php %s debug:aspect', realpath(__DIR__.'/../Fixtures/project/bin/console')));
+        $process = Process::fromShellCommandline(sprintf('php %s debug:aspect', realpath(__DIR__.'/../Fixtures/project/bin/console')));
         $process->run();
 
         $this->assertTrue($process->isSuccessful(), 'Unable to execute "debug:aspect" command.');
@@ -46,7 +46,7 @@ class DebugAspectCommandTest extends TestCase
         ];
 
         foreach ($expected as $string) {
-            $this->assertContains($string, $output);
+            $this->assertStringContainsString($string, $output);
         }
     }
 }

@@ -11,8 +11,6 @@
 namespace Go\Symfony\GoAopBundle\DependencyInjection;
 
 
-use Go\Aop\Features;
-use Go\Symfony\GoAopBundle\Kernel\AspectSymfonyKernel;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -62,7 +60,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->defaultValue(0)
                         ->end()
-                        ->scalarNode('app_dir')->defaultValue('%kernel.root_dir%/../src')->end()
+                        ->scalarNode('app_dir')->defaultValue('%kernel.project_dir%/src')->end()
                         ->scalarNode('cache_dir')->defaultValue('%kernel.cache_dir%/aspect')->end()
                         ->scalarNode('cache_file_mode')->end()
                         ->booleanNode('debug')->defaultValue('%kernel.debug%')->end()

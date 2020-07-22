@@ -21,7 +21,7 @@ class CacheWarmupCommandTest extends TestCase
 {
     protected $aspectCacheDir = __DIR__.'/../Fixtures/project/var/cache/test/aspect';
 
-    public function setUp()
+    protected function setUp(): void
     {
         $filesystem = new Filesystem();
 
@@ -38,7 +38,7 @@ class CacheWarmupCommandTest extends TestCase
     {
         $this->assertFalse(file_exists($this->aspectCacheDir));
 
-        $process = new Process(sprintf('php %s cache:warmup:aop', realpath(__DIR__.'/../Fixtures/project/bin/console')));
+        $process = Process::fromShellCommandline(sprintf('php %s cache:warmup:aop', realpath(__DIR__.'/../Fixtures/project/bin/console')));
         $process->run();
 
         $this->assertTrue($process->isSuccessful(), 'Unable to execute "cache:warmup:aop" command.');
